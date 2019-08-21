@@ -23,7 +23,8 @@ import in.morozov.nycschoolstats.utils.DisplayError;
 
 public class SchoolsActivity extends AppCompatActivity {
 
-    //TODO: use dependency injection
+    // TODO: use dependency injection and a provider to ensure we aren't creating a new factory
+    // every time system instantiates this activity
     private SchoolsViewModelFactory viewModelFactory = new SchoolsViewModelFactory( new SchoolsRepositoryImpl() );
 
     private SchoolsAdapter adapter;
@@ -61,8 +62,6 @@ public class SchoolsActivity extends AppCompatActivity {
         viewModel.error().observe( this, this::error );
 
         viewModel.loading().observe( this, this::showLoading );
-
-        viewModel.loadSchools();
     }
 
     private void showLoading( boolean loading ) {

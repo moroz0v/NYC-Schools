@@ -19,7 +19,7 @@ public final class SchoolServiceProvider {
             new HttpLoggingInterceptor().setLevel( HttpLoggingInterceptor.Level.BODY );
 
     private static OkHttpClient.Builder httpClient =
-            new OkHttpClient.Builder().addInterceptor( logging );
+            new OkHttpClient.Builder();
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()

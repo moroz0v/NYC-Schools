@@ -1,7 +1,5 @@
 package in.morozov.nycschoolstats.schools.viewmodel;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
@@ -15,7 +13,6 @@ import in.morozov.nycschoolstats.schools.viewmodel.datamodel.SchoolDetailRequest
 import in.morozov.nycschoolstats.schools.viewmodel.datamodel.SchoolDetails;
 import in.morozov.nycschoolstats.schools.viewmodel.datamodel.SchoolDetailsResponse;
 import in.morozov.nycschoolstats.schools.viewmodel.repo.SchoolDetailsRepository;
-import in.morozov.nycschoolstats.utils.Constants;
 import in.morozov.nycschoolstats.utils.DisplayError;
 
 public class SchoolDetailsViewModel extends ViewModel {
@@ -58,12 +55,24 @@ public class SchoolDetailsViewModel extends ViewModel {
             Transformations.map( detailsResponse, SchoolDetailsResponse::error );
 
 
-    public SchoolDetailsViewModel( @NonNull SchoolDetailsRepository repository ) {
+    public SchoolDetailsViewModel( @NonNull SchoolDetailsRepository repository, @Nullable String schoolId ) {
         this.repository = repository;
 
+        init( schoolId );
+    }
+
+    private void init( @Nullable String schoolId ){
         this.error.addSource( networkError, error::setValue );
 
         this.error.addSource( uiError, error::setValue );
+
+        if( schoolId != null && !schoolId.isEmpty() ) {
+            // only loading data from the constructor lets us leverage VM's ability to keep state
+            // through rotations. Not ideal but will work for now
+            this.loadSchoolDetails( schoolId );
+        } else {
+            uiError.setValue( new DisplayError( DisplayError.ERROR_INTERNAL ) );
+        }
     }
 
     @NonNull
@@ -81,19 +90,7 @@ public class SchoolDetailsViewModel extends ViewModel {
         return loading;
     }
 
-    public void schoolDetails( @Nullable Bundle extras ) {
-        String schoolId = null;
-
-        if ( extras != null && extras.containsKey( Constants.EXTRA_SELECTED_SCHOOL_ID ) ) {
-            schoolId = extras.getString( Constants.EXTRA_SELECTED_SCHOOL_ID );
-        }
-
-        if ( schoolId == null || schoolId.isEmpty() ) {
-            uiError.setValue( new DisplayError( DisplayError.ERROR_INTERNAL ) );
-
-            return;
-        }
-
+    private void loadSchoolDetails( @NonNull String schoolId ){
         loading.setValue( true );
 
         detailsRequest.setValue( new SchoolDetailRequest( schoolId ) );

@@ -1,5 +1,6 @@
 package in.morozov.nycschoolstats.schools.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,12 +15,14 @@ import in.morozov.nycschoolstats.databinding.SchoolDetailsActivityBinding;
 import in.morozov.nycschoolstats.schools.model.SchoolDetailsRepositoryImpl;
 import in.morozov.nycschoolstats.schools.viewmodel.SchoolDetailsViewModel;
 import in.morozov.nycschoolstats.schools.viewmodel.factory.SchoolDetailsViewModelFactory;
+import in.morozov.nycschoolstats.utils.Constants;
 import in.morozov.nycschoolstats.utils.DisplayError;
 
 public class SchoolDetailsActivity extends AppCompatActivity {
 
-    //TODO: use dependency injection
-    private SchoolDetailsViewModelFactory viewModelFactory = new SchoolDetailsViewModelFactory( new SchoolDetailsRepositoryImpl() );
+    //TODO: use dependency injection and a provider to ensure we aren't creating a new factory
+    // every time system instantiates this activity
+    private SchoolDetailsViewModelFactory viewModelFactory;
 
     private SchoolDetailsActivityBinding binding;
 
@@ -28,6 +31,8 @@ public class SchoolDetailsActivity extends AppCompatActivity {
         super.onCreate( savedInstanceState );
 
         binding = DataBindingUtil.setContentView( this, R.layout.school_details_activity );
+
+        initializeFactory();
 
         SchoolDetailsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get( SchoolDetailsViewModel.class );
 
@@ -46,8 +51,6 @@ public class SchoolDetailsActivity extends AppCompatActivity {
         viewModel.error().observe( this, this::error );
 
         viewModel.loading().observe( this, this::loading );
-
-        viewModel.schoolDetails( getIntent() != null ? getIntent().getExtras() : null );
     }
 
     private void loading( Boolean loading ) {
@@ -61,6 +64,18 @@ public class SchoolDetailsActivity extends AppCompatActivity {
                            error.errorMessage() != null ? error.errorMessage() : getString( R.string.error_general ), Snackbar.LENGTH_LONG )
                     .show();
         }
+    }
+
+    private void initializeFactory(){
+        Intent intent = getIntent();
+
+        String schoolId = null;
+
+        if( intent != null && intent.hasExtra( Constants.EXTRA_SELECTED_SCHOOL_ID ) ){
+            schoolId = intent.getStringExtra( Constants.EXTRA_SELECTED_SCHOOL_ID );
+        }
+
+        viewModelFactory = new SchoolDetailsViewModelFactory( new SchoolDetailsRepositoryImpl(), schoolId );
     }
 
 }

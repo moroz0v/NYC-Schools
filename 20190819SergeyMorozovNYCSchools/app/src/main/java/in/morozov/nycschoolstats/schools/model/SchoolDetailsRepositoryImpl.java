@@ -1,5 +1,7 @@
 package in.morozov.nycschoolstats.schools.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -54,6 +56,8 @@ public class SchoolDetailsRepositoryImpl implements SchoolDetailsRepository {
                 if ( response.isSuccessful() && response.body() != null ) {
                     schoolListLiveData.setValue(
                             new SchoolDetailsResponse( mapper.map( response.body() ) ) );
+
+                    Log.e( "SchoolDetailsRepositoryImpl", " made a networking call");
                 } else {
                     schoolListLiveData.setValue(
                             new SchoolDetailsResponse( new SchoolDetails(), new DisplayError( DisplayError.ERROR_NETWORK ) ) );

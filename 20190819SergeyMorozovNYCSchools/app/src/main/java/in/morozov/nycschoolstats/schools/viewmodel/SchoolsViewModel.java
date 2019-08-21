@@ -50,6 +50,10 @@ public class SchoolsViewModel extends ViewModel {
 
     public SchoolsViewModel( @NonNull SchoolsRepository repository ) {
         this.repository = repository;
+
+        // only loading data from the constructor lets us leverage VM's ability to keep state
+        // through rotations. Not ideal but will work for now
+        this.loadSchools();
     }
 
     //TODO: should paginate here - repo supports it
