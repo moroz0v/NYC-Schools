@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">NYC School Stats</string>
+    <string name="school_name">Name of the school is %s</string>
+    <string name="reading_score">Reading SAT score is %d</string>
+    <string name="writing_score">Writing SAT score is %d</string>
+    <string name="math_score">Math SAT score is %d</string>
+    <string name="error_general">Something went wrong, sorry about that!</string>
+    <string name="error_school_not_found">School not found!</string>
+</resources>

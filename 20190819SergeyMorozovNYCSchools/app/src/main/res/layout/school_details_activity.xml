@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <!--TODO: not show school layout is there's an error-->
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="loading"
+            type="Boolean" />
+
+        <variable
+            name="details"
+            type="in.morozov.nycschoolstats.schools.viewmodel.datamodel.SchoolDetails" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="true"
+            android:visibility="@{ safeUnbox(loading) ? View.VISIBLE : View.GONE }" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="@{ safeUnbox(loading) ? View.GONE : View.VISIBLE }">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/SchoolDetailsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@{ String.format(@string/school_name, details.schoolName )}" />
+
+            <TextView
+                android:id="@+id/sat_reading"
+                style="@style/SchoolDetailsField"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@{ String.format(@string/reading_score, details.satReadingScore) }" />
+
+            <TextView
+                android:id="@+id/sat_writing"
+                style="@style/SchoolDetailsField"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@{ String.format(@string/writing_score, details.satWritingScore) }" />
+
+            <TextView
+                android:id="@+id/sat_math"
+                style="@style/SchoolDetailsField"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@{ String.format(@string/math_score, details.satMathScore) }" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
